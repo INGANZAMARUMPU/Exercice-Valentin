@@ -5,18 +5,17 @@
     android:layout_height="match_parent"
     android:padding="10dp"
     android:background="#fff"
-    tools:context=".LoginActivity">
+    tools:context=".DialogInscription">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerVertical="true">
+        android:orientation="vertical">
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <EditText
-                android:id="@+id/field_login_username"
+                android:id="@+id/field_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Username"
@@ -28,32 +27,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <EditText
-                android:id="@+id/field_login_password"
+                android:id="@+id/field_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:lines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
-        <RelativeLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/field_clef"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="clé d'enregistrement"
+                android:inputType="textPassword"
+                android:lines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="right">
             <Button
+                android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="s'inscrire"
-                android:onClick="performLogin"
+                android:text="laisser"
+                android:textColor="#777"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="connexion"
+                android:text="valider"
                 android:layout_gravity="right"
                 android:textColor="#fff"
-                android:width="150dp"
+                android:width="120dp"
                 android:background="@color/colorAccent"
                 android:onClick="performLogin"
                 android:layout_alignParentRight="true"/>
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
