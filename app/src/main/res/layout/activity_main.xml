@@ -11,11 +11,18 @@
         android:layout_height="match_parent"
         android:id="@+id/recycler_reminders"/>
 
-    <Button
+    <androidx.cardview.widget.CardView
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:background="@drawable/ic_add"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="20dp"/>
+        android:layout_margin="20dp"
+        android:onClick="addNote"
+        app:cardElevation="5dp"
+        app:cardCornerRadius="30dp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_add"/>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

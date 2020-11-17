@@ -16,18 +16,13 @@
             android:textColor="#000"
             android:textAlignment="center"
             android:gravity="center_horizontal" />
-
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:id="@+id/field_description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/field_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Saisissez l'intitulée de la note"
-                android:inputType="text"
-                android:maxLines="2"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:hint="Saisissez l'intitulée de la note"
+            android:inputType="textMultiLine"
+            android:lines="2"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,23 +48,31 @@
                     android:layout_gravity="center"/>
             </LinearLayout>
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_weight="1"
                 android:layout_gravity="center">
                 <SeekBar
-                    android:id="@+id/spinner_green"
+                    android:id="@+id/seek_green"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"/>
+                    android:layout_height="20dp"
+                    android:max="255"/>
                 <SeekBar
-                    android:id="@+id/spinner_blue"
+                    android:id="@+id/seek_blue"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"/>
+                    android:layout_height="20dp"
+                    android:max="255"/>
                 <SeekBar
-                    android:id="@+id/spinner_red"
+                    android:id="@+id/seek_red"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp" />
+                    android:layout_height="20dp"
+                    android:max="255"/>
             </LinearLayout>
+            <TextView
+                android:id="@+id/colors_preview"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"/>
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
@@ -77,11 +80,24 @@
             android:text="Ordre de priorité"
             android:textSize="7pt"
             android:layout_marginTop="5dp"/>
-        <SeekBar
-            android:id="@+id/seek_priorite"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <SeekBar
+                android:id="@+id/seek_priorite"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:max="4"/>
+            <TextView
+                android:id="@+id/lbl_priorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"/>
+        </LinearLayout>
         <DatePicker
+            android:id="@+id/date_echeance"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:datePickerMode="spinner"
