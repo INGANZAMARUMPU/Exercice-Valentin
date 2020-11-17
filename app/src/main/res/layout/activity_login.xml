@@ -10,50 +10,55 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerVertical="true">
+        android:layout_above="@+id/buttons"
+        android:orientation="vertical">
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <EditText
                 android:id="@+id/field_login_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
                 android:focusedByDefault="true"
+                android:hint="Username"
                 android:lines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <EditText
                 android:id="@+id/field_login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:lines="1"/>
+                android:lines="1" />
         </com.google.android.material.textfield.TextInputLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:text="s'inscrire"
-                android:onClick="showInscription"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:text="connexion"
-                android:layout_gravity="right"
-                android:textColor="#fff"
-                android:width="150dp"
-                android:background="@color/colorAccent"
-                android:onClick="performLogin"
-                android:layout_alignParentRight="true"/>
-        </RelativeLayout>
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="s'inscrire"
+            android:onClick="showInscription"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="connexion"
+            android:layout_gravity="right"
+            android:textColor="#fff"
+            android:width="150dp"
+            android:background="@color/colorAccent"
+            android:onClick="performLogin"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
 </RelativeLayout>

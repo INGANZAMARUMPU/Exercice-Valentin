@@ -54,17 +54,17 @@
                 android:layout_weight="1"
                 android:layout_gravity="center">
                 <SeekBar
+                    android:id="@+id/seek_red"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:max="255"/>
+                <SeekBar
                     android:id="@+id/seek_green"
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:max="255"/>
                 <SeekBar
                     android:id="@+id/seek_blue"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:max="255"/>
-                <SeekBar
-                    android:id="@+id/seek_red"
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:max="255"/>
