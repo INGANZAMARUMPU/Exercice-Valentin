@@ -68,8 +68,13 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         LoginActivity.this.finish();
                     } else {
-                        Toast.makeText(LoginActivity.this, "les infos semblent incorrects",
-                                Toast.LENGTH_LONG).show();
+                        LoginActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(LoginActivity.this,
+                                        "les infos semblent incorrect", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 } catch (Exception e) {
                 }

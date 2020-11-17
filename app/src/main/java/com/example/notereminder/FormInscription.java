@@ -1,11 +1,26 @@
 package com.example.notereminder;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.logging.Handler;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class FormInscription extends Dialog {
 
@@ -41,6 +56,48 @@ public class FormInscription extends Dialog {
     }
     public void submit(){
         if(validateFields()) {
+            String username = field_username.getText().toString(),
+                    password = field_password.getText().toString(),
+                    inscription = field_no_inscription.getText().toString();
+
+            OkHttpClient client = new OkHttpClient();
+            HttpUrl.Builder urlBuilder = HttpUrl.parse(
+                    Host.URL + "/register/"+username+"/"+password+"/"+inscription)
+                    .newBuilder();
+            String url = urlBuilder.build().toString();
+            Request request = new Request.Builder().url(url).get().build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, final IOException e) {
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String json = response.body().string();
+                    try {
+                        final JSONObject j = new JSONObject(json);
+                        if(j.getString("code").trim().equals("200")) {
+                            dismiss();
+                        } else {
+                            final String message = j.getString("message");
+                            context.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            });
         }
     }
     private Boolean validateFields() {
