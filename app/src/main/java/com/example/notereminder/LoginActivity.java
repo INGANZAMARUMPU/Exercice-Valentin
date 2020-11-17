@@ -20,5 +20,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void showInscription(View view) {
+        new FormInscription(this).show();
     }
 }
