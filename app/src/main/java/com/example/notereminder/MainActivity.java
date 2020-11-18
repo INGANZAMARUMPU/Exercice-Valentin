@@ -1,10 +1,12 @@
 package com.example.notereminder;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         notes = new ArrayList<>();
         adaptateur = new AdapterNote(notes);
         recycler.setAdapter(adaptateur);
+        new ItemTouchHelper(movement).attachToRecyclerView(recycler);
         chargerNotes();
     }
 
@@ -117,4 +120,16 @@ public class MainActivity extends AppCompatActivity {
         notes.add(note);
         adaptateur.notifyDataSetChanged();
     }
+    ItemTouchHelper.SimpleCallback movement = new ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP|ItemTouchHelper.DOWN, 0) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
 }

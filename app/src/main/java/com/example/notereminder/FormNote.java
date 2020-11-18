@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -30,8 +31,8 @@ public class FormNote extends Dialog {
     private MainActivity context;
     private EditText field_description;
     private Button btn_cancel, btn_submit, btn_delete;
+    private DatePicker date_echeance;
     SeekBar seek_green, seek_red, seek_blue, seek_priorite;
-    DatePicker date_echeance;
     TextView colors_preview, lbl_priorite;
     private Note note;
     private boolean edition = false;
@@ -52,14 +53,17 @@ public class FormNote extends Dialog {
         colors_preview = findViewById(R.id.colors_preview);
         lbl_priorite = findViewById(R.id.lbl_priorite);
         seek_priorite = findViewById(R.id.seek_priorite);
+        date_echeance = findViewById(R.id.date_echeance);
 
         btn_cancel = findViewById(R.id.btn_cancel);
         btn_delete = findViewById(R.id.btn_delete);
         btn_submit = findViewById(R.id.btn_submit);
 
         int_vert.setValue(0); int_bleu.setValue(0); int_rouge.setValue(0); int_priorite.setValue(0);
-
         initAll(); watchColors();
+        seek_green.setProgress((int) (Math.random()*255));
+        seek_blue.setProgress((int) (Math.random()*255));
+        seek_red.setProgress((int) (Math.random()*255));
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,6 +163,12 @@ public class FormNote extends Dialog {
     }
 
     private void add() {
+        context.pushNote(new Note(
+                "0", field_description.getText().toString(), getHexColor(),
+                Host.getDate(date_echeance), seek_priorite.getProgress()
+        ));
+        dismiss();
+        if (true) return ;
         String json = "{" +
 //                "\"username\":\"" + field_user_prenom.getText() +
 //                "\",\"first_name\":\"" + field_user_prenom.getText() +
@@ -317,10 +327,10 @@ public class FormNote extends Dialog {
     }
 
     public String getHexColor() {
-        return
-            Integer.toHexString(int_rouge.getValue())+
-            Integer.toHexString(int_vert.getValue()) +
-            Integer.toHexString(int_bleu.getValue());
+        return "#" +
+            Integer.toHexString(seek_red.getProgress())+
+            Integer.toHexString(seek_green.getProgress()) +
+            Integer.toHexString(seek_blue.getProgress());
     }
 
     public void setColor(String color) {
