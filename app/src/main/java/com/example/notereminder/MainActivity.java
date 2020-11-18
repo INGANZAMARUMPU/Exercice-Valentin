@@ -87,9 +87,9 @@ public class MainActivity extends AppCompatActivity {
                                 json_obj.getString("echeance"),
                                 json_obj.getInt("ordre")
                         );
-                        notes.add(note);
+                        notes.add(0, note);
                     }
-                    MainActivity.this.adaptateur.notifyDataSetChanged();
+                    adaptateur.notifyDataSetChanged();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -133,20 +133,28 @@ public class MainActivity extends AppCompatActivity {
         new FormNote(this).show();
     }
     public void removeNote(Note note) {
-
+        for(Note n: notes){
+            if(n.id.equals(note.id)){
+                int position = notes.indexOf(n);
+                notes.remove(n);
+                adaptateur.notifyItemRemoved(position);
+                break;
+            }
+        }
     }
     public void updateNote(Note note) {
         for(Note n: notes){
             if(n.id.equals(note.id)){
-                notes.set(notes.indexOf(n), note);
+                int position = notes.indexOf(n);
+                notes.set(position, note);
+                adaptateur.notifyItemChanged(position);
                 break;
             }
         }
-        adaptateur.notifyDataSetChanged();
     }
     public void pushNote(Note note) {
         notes.add(0, note);
-        adaptateur.notifyDataSetChanged();
+        adaptateur.notifyItemInserted(0);
     }
     ItemTouchHelper.SimpleCallback movement = new ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP|ItemTouchHelper.DOWN, 0) {

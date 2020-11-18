@@ -275,13 +275,12 @@ public class FormNote extends Dialog {
     }
     private void delete() {
         OkHttpClient client = new OkHttpClient();
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/change/"+note.id+"/").newBuilder();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/remove/"+note.id).newBuilder();
 
         String url = urlBuilder.build().toString();
         Request request = new Request.Builder()
-                .url(url)
-                .delete()
-                .build();
+                .addHeader("Cookie", context.reminder)
+                .url(url).get().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
@@ -297,21 +296,22 @@ public class FormNote extends Dialog {
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
                 if (!json.trim().isEmpty()){
-                    context.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "Suppression échouée", Toast.LENGTH_SHORT).show();
+                    try {
+                        JSONObject j = new JSONObject(json);
+                        if(j.getString("code").trim().equals("200")) {
+                            context.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    context.removeNote(note);
+                                    Toast.makeText(context, "Suppression éffectuée", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            FormNote.this.dismiss();
                         }
-                    });
-                    return;
-                }
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        context.removeNote(note);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                });
-                FormNote.this.dismiss();
+                }
             }
         });
     }
