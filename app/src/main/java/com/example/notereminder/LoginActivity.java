@@ -61,10 +61,18 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
+                String reminder = "";
+                for(String cookie: response.headers().get("Set-Cookie").split(";")){
+                    if(cookie.contains("reminder")){
+                        reminder = response.headers().get("Set-Cookie");
+                        break;
+                    }
+                }
                 try {
                     JSONObject j = new JSONObject(json);
                     if(j.getString("code").trim().equals("200")) {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("reminder", reminder);
                         startActivity(intent);
                         LoginActivity.this.finish();
                     } else {

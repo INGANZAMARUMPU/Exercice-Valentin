@@ -2,6 +2,7 @@ package com.example.notereminder;
 
 import android.app.Dialog;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -163,27 +164,94 @@ public class FormNote extends Dialog {
     }
 
     private void add() {
-        context.pushNote(new Note(
+        final Note note = new Note(
                 "0", field_description.getText().toString(), getHexColor(),
                 Host.getDate(date_echeance), seek_priorite.getProgress()
-        ));
-        dismiss();
-        if (true) return ;
+        );
         String json = "{" +
-//                "\"username\":\"" + field_user_prenom.getText() +
-//                "\",\"first_name\":\"" + field_user_prenom.getText() +
-//                "\",\"last_name\":\"" + field_description.getText() +
-//                "\",\"password\":\"" + field_user_code.getText() +
-                "\"}";
+            "\"texte\":\"" + note.description +
+            "\",\"e\":\"" + note.echeance +
+            "\",\"o\":\"" + note.priorite +
+            "\",\"c\":\"" + note.couleur +
+        "\"}";
 
         RequestBody body = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
 
         OkHttpClient client = new OkHttpClient();
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/user/").newBuilder();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/add").newBuilder();
 
         String url = urlBuilder.build().toString();
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Cookie", context.reminder)
+                .post(body)
+                .build();
+
+        Log.i("==== AJOUT ====", request.toString());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, final IOException e) {
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String json = response.body().string();
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        context.pushNote(note);
+                    }
+                });
+                try {
+                    JSONObject json_obj = new JSONObject(json).getJSONObject("data");
+                    note.id = json_obj.getString("id");
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            context.pushNote(note);
+                        }
+                    });
+                    context.pushNote(note);
+                    FormNote.this.dismiss();
+                } catch (JSONException e) {
+                    Log.i("==== AJOUT ====", e.getMessage());
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Ajout échouée", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+    }
+    private void edit() {
+        final Note new_note = new Note(
+                "0", field_description.getText().toString(), getHexColor(),
+                Host.getDate(date_echeance), seek_priorite.getProgress()
+        );
+        String json = "{" +
+            "\"texte\":\"" + new_note.description +
+            "\",\"e\":\"" + new_note.echeance +
+            "\",\"o\":\"" + new_note.priorite +
+            "\",\"c\":\"" + new_note.couleur +
+        "\"}";
+
+        RequestBody body = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
+
+        OkHttpClient client = new OkHttpClient();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/change/"+note.id).newBuilder();
+
+        String url = urlBuilder.build().toString();
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", context.reminder)
                 .post(body)
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -200,79 +268,18 @@ public class FormNote extends Dialog {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
-                JSONObject json_obj = null;
                 try {
-                    json_obj = new JSONObject(json);
-//                    final Note res = new Note(
-//                            json_obj.getString("id"),
-//                            json_obj.getString("first_name"),
-//                            json_obj.getString("last_name")
-//                    );
+                    JSONObject json_obj = new JSONObject(json).getJSONObject("data");
+                    new_note.id = json_obj.getString("id");
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            context.pushNote(note);
+                            context.pushNote(new_note);
                         }
                     });
                     FormNote.this.dismiss();
                 } catch (JSONException e) {
-                    context.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "Ajout échouée", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
-    }
-    private void edit() {
-        String json = "{" +
-//                "\"username\":\"" + field_user_prenom.getText() +
-//                "\",\"first_name\":\"" + field_user_prenom.getText() +
-//                "\",\"last_name\":\"" + field_description.getText() +
-//                "\",\"password\":\"" + field_user_code.getText() +
-                "\"}";
-
-        RequestBody body = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
-
-        OkHttpClient client = new OkHttpClient();
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/user/"+note.id+"/").newBuilder();
-
-        String url = urlBuilder.build().toString();
-        Request request = new Request.Builder()
-                .url(url)
-                .patch(body)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, final IOException e) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String json = response.body().string();
-                try {
-                    JSONObject json_obj = new JSONObject(json);
-//                    final Note res = new Note(
-//                            json_obj.getString("id"),
-//                            json_obj.getString("first_name"),
-//                            json_obj.getString("last_name")
-//                    );
-//                    context.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            context.editNote(res);
-//                        }
-//                    });
-                    FormNote.this.dismiss();
-                } catch (JSONException e) {
+                    Log.i("==== AJOUT ====", e.getMessage());
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -285,7 +292,7 @@ public class FormNote extends Dialog {
     }
     private void delete() {
         OkHttpClient client = new OkHttpClient();
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/user/"+note.id+"/").newBuilder();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/change/"+note.id+"/").newBuilder();
 
         String url = urlBuilder.build().toString();
         Request request = new Request.Builder()

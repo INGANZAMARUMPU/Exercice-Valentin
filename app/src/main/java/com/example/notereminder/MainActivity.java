@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Note> notes;
     private RecyclerView recycler;
     private AdapterNote adaptateur;
+    String reminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +48,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        reminder = getIntent().getStringExtra("reminder");
 
         recycler = findViewById(R.id.recycler_reminders);
         recycler.setLayoutManager(new GridLayoutManager(this, 1));
         notes = new ArrayList<>();
-        adaptateur = new AdapterNote(notes);
+        adaptateur = new AdapterNote(this, notes);
         recycler.setAdapter(adaptateur);
         new ItemTouchHelper(movement).attachToRecyclerView(recycler);
         chargerNotes();
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         String url = urlBuilder.build().toString();
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Cookie", reminder)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -108,9 +111,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void addNote(View view) {
         new FormNote(this).show();
-    }
-
-    public void editNote(Note note) {
     }
 
     public void removeNote(Note note) {
