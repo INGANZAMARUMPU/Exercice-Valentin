@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -119,7 +120,6 @@ public class FormNote extends Dialog {
             }
         });
     }
-
     private void initAll() {
         seek_blue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -168,15 +168,12 @@ public class FormNote extends Dialog {
                 "0", field_description.getText().toString(), getHexColor(),
                 Host.getDate(date_echeance), seek_priorite.getProgress()
         );
-        String json = "{" +
-            "\"texte\":\"" + note.description +
-            "\",\"e\":\"" + note.echeance +
-            "\",\"o\":\"" + note.priorite +
-            "\",\"c\":\"" + note.couleur +
-        "\"}";
-
-        RequestBody body = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
-
+        RequestBody body = new FormBody.Builder()
+                .add("texte", note.description)
+                .add("e", note.echeance)
+                .add("o", note.priorite.toString())
+                .add("c", note.couleur)
+                .build();
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/add").newBuilder();
 
@@ -186,8 +183,6 @@ public class FormNote extends Dialog {
                 .addHeader("Cookie", context.reminder)
                 .post(body)
                 .build();
-
-        Log.i("==== AJOUT ====", request.toString());
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
@@ -202,12 +197,6 @@ public class FormNote extends Dialog {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        context.pushNote(note);
-                    }
-                });
                 try {
                     JSONObject json_obj = new JSONObject(json).getJSONObject("data");
                     note.id = json_obj.getString("id");
@@ -217,10 +206,8 @@ public class FormNote extends Dialog {
                             context.pushNote(note);
                         }
                     });
-                    context.pushNote(note);
                     FormNote.this.dismiss();
                 } catch (JSONException e) {
-                    Log.i("==== AJOUT ====", e.getMessage());
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -236,15 +223,12 @@ public class FormNote extends Dialog {
                 "0", field_description.getText().toString(), getHexColor(),
                 Host.getDate(date_echeance), seek_priorite.getProgress()
         );
-        String json = "{" +
-            "\"texte\":\"" + new_note.description +
-            "\",\"e\":\"" + new_note.echeance +
-            "\",\"o\":\"" + new_note.priorite +
-            "\",\"c\":\"" + new_note.couleur +
-        "\"}";
-
-        RequestBody body = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
-
+        RequestBody body = new FormBody.Builder()
+                .add("texte", new_note.description)
+                .add("e", new_note.echeance)
+                .add("o", new_note.priorite.toString())
+                .add("c", new_note.couleur)
+                .build();
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/change/"+note.id).newBuilder();
 
@@ -274,16 +258,15 @@ public class FormNote extends Dialog {
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            context.pushNote(new_note);
+                            context.updateNote(new_note);
                         }
                     });
                     FormNote.this.dismiss();
                 } catch (JSONException e) {
-                    Log.i("==== AJOUT ====", e.getMessage());
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(context, "Ajout échouée", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Edition échouée", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -341,14 +324,16 @@ public class FormNote extends Dialog {
     }
 
     public void setColor(String color) {
-        int_rouge.setValue(Integer.decode("0x"+color.subSequence(0,1)));
-        int_vert.setValue(Integer.decode("0x"+color.subSequence(2,3)));
-        int_bleu.setValue(Integer.decode("0x"+color.subSequence(4,5)));
+        color = color.replace("#","");
+        seek_red.setProgress(Integer.decode("0x"+color.subSequence(0,2)));
+        seek_green.setProgress(Integer.decode("0x"+color.subSequence(2,4)));
+        seek_blue.setProgress(Integer.decode("0x"+color.subSequence(4,6)));
     }
 
     public void setEdition(Note note) {
         edition = true;
         this.note = note;
+        setColor(note.couleur);
         field_description.setText(note.description);
         btn_delete.setVisibility(View.VISIBLE);
     }

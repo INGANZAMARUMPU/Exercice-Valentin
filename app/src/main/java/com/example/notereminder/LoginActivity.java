@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                 String reminder = "";
                 for(String cookie: response.headers().get("Set-Cookie").split(";")){
                     if(cookie.contains("reminder")){
-                        reminder = response.headers().get("Set-Cookie");
+                        reminder = cookie;
                         break;
                     }
                 }

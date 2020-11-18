@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void chargerNotes() {
         OkHttpClient client = new OkHttpClient();
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/add").newBuilder();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/list").newBuilder();
 
         String url = urlBuilder.build().toString();
         Request request = new Request.Builder()
@@ -88,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
                         );
                         notes.add(note);
                     }
-                    adaptateur.notifyDataSetChanged();
+                    MainActivity.this.adaptateur.notifyDataSetChanged();
                 } catch (Exception e) {
-                    Log.i("==== MAIN ACTIVITY ====", e.getMessage());
+                    e.printStackTrace();
                 }
             }
         });
@@ -105,6 +106,25 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_deconnexion) {
+            Toast.makeText(this, "deconnexion...", Toast.LENGTH_SHORT).show();
+
+            OkHttpClient client = new OkHttpClient();
+            HttpUrl.Builder urlBuilder = HttpUrl.parse(Host.URL + "/deconnect").newBuilder();
+            String url = urlBuilder.build().toString();
+            Request request = new Request.Builder().url(url).get().build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, final IOException e) {
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                }
+            });
+            reminder = "";
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -112,13 +132,20 @@ public class MainActivity extends AppCompatActivity {
     public void addNote(View view) {
         new FormNote(this).show();
     }
-
     public void removeNote(Note note) {
 
     }
-
+    public void updateNote(Note note) {
+        for(Note n: notes){
+            if(n.id.equals(note.id)){
+                notes.set(notes.indexOf(n), note);
+                break;
+            }
+        }
+        adaptateur.notifyDataSetChanged();
+    }
     public void pushNote(Note note) {
-        notes.add(note);
+        notes.add(0, note);
         adaptateur.notifyDataSetChanged();
     }
     ItemTouchHelper.SimpleCallback movement = new ItemTouchHelper.SimpleCallback(

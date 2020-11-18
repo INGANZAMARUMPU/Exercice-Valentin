@@ -1,6 +1,7 @@
 package com.example.notereminder;
 
 import android.graphics.Color;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,11 @@ import java.util.ArrayList;
 public class AdapterNote extends RecyclerView.Adapter<AdapterNote.ViewHolder> {
 
     ArrayList<Note> notes;
+    MainActivity context;
 
-    public AdapterNote(ArrayList<Note> notes) {
+    public AdapterNote(MainActivity context, ArrayList<Note> notes) {
         this.notes = notes;
+        this.context = context;
     }
 
     @NonNull
@@ -35,6 +38,14 @@ public class AdapterNote extends RecyclerView.Adapter<AdapterNote.ViewHolder> {
         holder.lbl_echeance.setText(note.echeance);
         holder.lbl_priorite.setText(note.strPriorite());
         holder.view.setCardBackgroundColor(Color.parseColor(note.couleur));
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FormNote form = new FormNote(context);
+                form.show();
+                form.setEdition(note);
+            }
+        });
     }
 
     @Override
