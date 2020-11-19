@@ -318,9 +318,9 @@ public class FormNote extends Dialog {
 
     public String getHexColor() {
         return "#" +
-            Integer.toHexString(seek_red.getProgress())+
-            Integer.toHexString(seek_green.getProgress()) +
-            Integer.toHexString(seek_blue.getProgress());
+            String.format("%02X", seek_red.getProgress())+
+            String.format("%02X", seek_green.getProgress()) +
+            String.format("%02X", seek_blue.getProgress());
     }
 
     public void setColor(String color) {

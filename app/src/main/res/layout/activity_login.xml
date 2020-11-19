@@ -16,7 +16,6 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <EditText
                 android:id="@+id/field_login_username"
                 android:layout_width="match_parent"

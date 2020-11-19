@@ -16,13 +16,18 @@
             android:textColor="#000"
             android:textAlignment="center"
             android:gravity="center_horizontal" />
-        <EditText
-            android:id="@+id/field_description"
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Saisissez l'intitulée de la note"
-            android:inputType="textMultiLine"
-            android:lines="2"/>
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/field_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Saisissez l'intitulée de la note"
+                android:inputType="textMultiLine"
+                android:lines="2"/>
+        </com.google.android.material.textfield.TextInputLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,16 +40,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:text="rouge"
+                    android:textColor="#777"
                     android:layout_gravity="center" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:text="vert"
+                    android:textColor="#777"
                     android:layout_gravity="center"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:text="bleu"
+                    android:textColor="#777"
                     android:layout_gravity="center"/>
             </LinearLayout>
             <LinearLayout
@@ -79,6 +87,7 @@
             android:layout_height="match_parent"
             android:text="Ordre de priorité"
             android:textSize="7pt"
+            android:textColor="#777"
             android:layout_marginTop="5dp"/>
         <LinearLayout
             android:layout_width="match_parent"
